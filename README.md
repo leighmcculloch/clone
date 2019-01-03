@@ -17,5 +17,7 @@ go get 4d63.com/githubclone
 ## Usage
 
 ```
-githubclone <repository-name>
+githubclone <repository-name> [repository-name] ...
 ```
+
+Requires the current username to match the GitHub username of the repositories being cloned.
