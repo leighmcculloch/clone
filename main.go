@@ -52,5 +52,6 @@ func main() {
 	err = cmd.Run()
 	if err != nil {
 		color.Red("Error: %s\n", err)
+		os.Exit(1)
 	}
 }
