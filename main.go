@@ -8,6 +8,7 @@ import (
 	"os/user"
 	"path"
 	"path/filepath"
+	"strings"
 
 	"github.com/fatih/color"
 )
@@ -26,19 +27,30 @@ func main() {
 		return
 	}
 
-	u, err := user.Current()
-	if err != nil {
-		color.Red("Error: %s\n", err)
-		return
+	repo := args[0]
+
+	username := ""
+	if strings.Contains(repo, "/") {
+		components := strings.SplitN(repo, "/", 2)
+		username = components[0]
+		repo = components[1]
 	}
 
-	repo := args[0]
+	if username == "" {
+		u, err := user.Current()
+		if err != nil {
+			color.Red("Error: %s\n", err)
+			return
+		}
+		username = u.Username
+	}
+
 	target := repo
 	if len(args) > 1 {
 		target = args[1]
 	}
 
-	repoPath := path.Join(u.Username, repo)
+	repoPath := path.Join(username, repo)
 
 	httpsURL := fmt.Sprintf("https://github.com/%s", repoPath)
 	cloneCmd := exec.Command("git", "clone", httpsURL, target)
@@ -46,8 +58,7 @@ func main() {
 	cloneCmd.Stdout = os.Stdout
 	cloneCmd.Stderr = os.Stderr
 	color.Green("Cloning repo %s:\n", httpsURL)
-	err = cloneCmd.Run()
-	if err != nil {
+	if err := cloneCmd.Run(); err != nil {
 		color.Red("Error: %s\n", err)
 		os.Exit(1)
 	}
@@ -58,8 +69,7 @@ func main() {
 	setURLCmd.Stdin = os.Stdin
 	setURLCmd.Stdout = os.Stdout
 	setURLCmd.Stderr = os.Stderr
-	err = setURLCmd.Run()
-	if err != nil {
+	if err := setURLCmd.Run(); err != nil {
 		color.Red("Error: %s\n", err)
 		os.Exit(1)
 	}
