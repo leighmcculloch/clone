@@ -6,6 +6,8 @@ import (
 	"os"
 	"os/exec"
 	"os/user"
+	"path"
+	"path/filepath"
 
 	"github.com/fatih/color"
 )
@@ -31,25 +33,32 @@ func main() {
 	}
 
 	repo := args[0]
-	target := ""
+	target := repo
 	if len(args) > 1 {
 		target = args[1]
 	}
 
-	url := fmt.Sprintf("git@github.com:%s/%s", u.Username, repo)
+	repoPath := path.Join(u.Username, repo)
 
-	cloneArgs := []string{"clone", url}
-	if target != "" {
-		cloneArgs = append(cloneArgs, target)
+	httpsURL := fmt.Sprintf("https://github.com/%s", repoPath)
+	cloneCmd := exec.Command("git", "clone", httpsURL, target)
+	cloneCmd.Stdin = os.Stdin
+	cloneCmd.Stdout = os.Stdout
+	cloneCmd.Stderr = os.Stderr
+	color.Green("Cloning repo %s:\n", httpsURL)
+	err = cloneCmd.Run()
+	if err != nil {
+		color.Red("Error: %s\n", err)
+		os.Exit(1)
 	}
 
-	cmd := exec.Command("git", cloneArgs...)
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	color.Green("Cloning repo %s:\n", url)
-	err = cmd.Run()
+	sshURL := fmt.Sprintf("git@github.com:%s", repoPath)
+	setURLCmd := exec.Command("git", "remote", "set-url", "--add", "--push", "origin", sshURL)
+	setURLCmd.Dir = filepath.Join(".", target)
+	setURLCmd.Stdin = os.Stdin
+	setURLCmd.Stdout = os.Stdout
+	setURLCmd.Stderr = os.Stderr
+	err = setURLCmd.Run()
 	if err != nil {
 		color.Red("Error: %s\n", err)
 		os.Exit(1)
