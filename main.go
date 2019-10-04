@@ -1,8 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
+	"net/http"
 	"os"
 	"os/exec"
 	"os/user"
@@ -59,7 +61,7 @@ func main() {
 	cloneCmd.Stderr = os.Stderr
 	color.Green("Cloning repo %s:\n", httpsURL)
 	if err := cloneCmd.Run(); err != nil {
-		color.Red("Error: %s\n", err)
+		color.Red("Error cloning: %s\n", err)
 		os.Exit(1)
 	}
 
@@ -70,7 +72,51 @@ func main() {
 	setURLCmd.Stdout = os.Stdout
 	setURLCmd.Stderr = os.Stderr
 	if err := setURLCmd.Run(); err != nil {
-		color.Red("Error: %s\n", err)
+		color.Red("Error setting origin: %s\n", err)
 		os.Exit(1)
+	}
+
+	apiURL := fmt.Sprintf("https://api.github.com/repos/%s", repoPath)
+	apiResp, err := http.Get(apiURL)
+	if err != nil {
+		color.Yellow("Warning: Unable to check if fork: %s\n", err)
+		os.Exit(0)
+	}
+	if apiResp.StatusCode != http.StatusOK {
+		color.Yellow("Warning: Unable to check if fork: %s\n", apiResp.Status)
+		os.Exit(0)
+	} else {
+		defer apiResp.Body.Close()
+		apiRespDec := struct {
+			Parent struct {
+				CloneURL string `json:"clone_url"`
+				SSHURL   string `json:"ssh_url"`
+			} `json:"parent"`
+		}{}
+		err := json.NewDecoder(apiResp.Body).Decode(&apiRespDec)
+		if err != nil {
+			color.Yellow("Warning: Unable to check if fork: %s\n", err)
+			os.Exit(0)
+		}
+		if apiRespDec.Parent.SSHURL != "" {
+			setUpstreamCmd := exec.Command("git", "remote", "add", "upstream", apiRespDec.Parent.CloneURL)
+			setUpstreamCmd.Dir = filepath.Join(".", target)
+			setUpstreamCmd.Stdin = os.Stdin
+			setUpstreamCmd.Stdout = os.Stdout
+			setUpstreamCmd.Stderr = os.Stderr
+			if err := setUpstreamCmd.Run(); err != nil {
+				color.Red("Error setting upstream: %s\n", err)
+				os.Exit(1)
+			}
+			setUpstreamPushCmd := exec.Command("git", "remote", "set-url", "--add", "--push", "upstream", apiRespDec.Parent.SSHURL)
+			setUpstreamPushCmd.Dir = filepath.Join(".", target)
+			setUpstreamPushCmd.Stdin = os.Stdin
+			setUpstreamPushCmd.Stdout = os.Stdout
+			setUpstreamPushCmd.Stderr = os.Stderr
+			if err := setUpstreamPushCmd.Run(); err != nil {
+				color.Red("Error setting upstream: %s\n", err)
+				os.Exit(1)
+			}
+		}
 	}
 }
