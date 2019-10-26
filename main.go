@@ -90,6 +90,8 @@ func main() {
 		os.Exit(1)
 	}
 
+	parentCloneURL := ""
+	parentSSHURL := ""
 	if public {
 		apiURL := fmt.Sprintf("https://api.github.com/repos/%s", repoPath)
 		apiResp, err := http.Get(apiURL)
@@ -114,25 +116,38 @@ func main() {
 				os.Exit(0)
 			}
 			if apiRespDec.Parent.SSHURL != "" {
-				setUpstreamCmd := exec.Command("git", "remote", "add", "upstream", apiRespDec.Parent.CloneURL)
-				setUpstreamCmd.Dir = filepath.Join(".", target)
-				setUpstreamCmd.Stdin = os.Stdin
-				setUpstreamCmd.Stdout = os.Stdout
-				setUpstreamCmd.Stderr = os.Stderr
-				if err := setUpstreamCmd.Run(); err != nil {
-					color.Red("Error setting upstream: %s\n", err)
-					os.Exit(1)
-				}
-				setUpstreamPushCmd := exec.Command("git", "remote", "set-url", "--add", "--push", "upstream", apiRespDec.Parent.SSHURL)
-				setUpstreamPushCmd.Dir = filepath.Join(".", target)
-				setUpstreamPushCmd.Stdin = os.Stdin
-				setUpstreamPushCmd.Stdout = os.Stdout
-				setUpstreamPushCmd.Stderr = os.Stderr
-				if err := setUpstreamPushCmd.Run(); err != nil {
-					color.Red("Error setting upstream: %s\n", err)
-					os.Exit(1)
-				}
+				parentCloneURL = apiRespDec.Parent.CloneURL
+				parentSSHURL = apiRespDec.Parent.SSHURL
 			}
+		}
+	}
+
+	if !public && strings.Contains(repo, "--") {
+		repoParts := strings.SplitN(repo, "--", 2)
+		parentRepoPath := path.Join(repoParts...)
+		parentURL := fmt.Sprintf("git@github.com:%s", parentRepoPath)
+		parentCloneURL = parentURL
+		parentSSHURL = parentURL
+	}
+
+	if parentCloneURL != "" && parentSSHURL != "" {
+		setUpstreamCmd := exec.Command("git", "remote", "add", "upstream", parentCloneURL)
+		setUpstreamCmd.Dir = filepath.Join(".", target)
+		setUpstreamCmd.Stdin = os.Stdin
+		setUpstreamCmd.Stdout = os.Stdout
+		setUpstreamCmd.Stderr = os.Stderr
+		if err := setUpstreamCmd.Run(); err != nil {
+			color.Red("Error setting upstream: %s\n", err)
+			os.Exit(1)
+		}
+		setUpstreamPushCmd := exec.Command("git", "remote", "set-url", "--add", "--push", "upstream", parentSSHURL)
+		setUpstreamPushCmd.Dir = filepath.Join(".", target)
+		setUpstreamPushCmd.Stdin = os.Stdin
+		setUpstreamPushCmd.Stdout = os.Stdout
+		setUpstreamPushCmd.Stderr = os.Stderr
+		if err := setUpstreamPushCmd.Run(); err != nil {
+			color.Red("Error setting upstream: %s\n", err)
+			os.Exit(1)
 		}
 	}
 }
