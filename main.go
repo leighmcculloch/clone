@@ -38,16 +38,19 @@ func main() {
 		repo = components[1]
 	}
 
+	systemUser, err := user.Current()
+	if err != nil {
+		color.Red("Error: %s\n", err)
+		return
+	}
 	if username == "" {
-		u, err := user.Current()
-		if err != nil {
-			color.Red("Error: %s\n", err)
-			return
-		}
-		username = u.Username
+		username = systemUser.Username
 	}
 
 	target := repo
+	if username != systemUser.Username {
+		target = username + "--" + repo
+	}
 	if len(args) > 1 {
 		target = args[1]
 	}
