@@ -1,6 +1,6 @@
-release:
-	rm -fr dist
-	goreleaser
+build:
+	go build
 
-setup:
-	go get github.com/goreleaser/goreleaser
+release:
+	go run github.com/goreleaser/goreleaser --rm-dist
+	./dist/clone_linux_amd64/clone -version

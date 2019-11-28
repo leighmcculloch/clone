@@ -1,6 +1,10 @@
-# githubclone
+<div align="center"><img alt="clone" src="README-clone.png" /></div>
+<p align="center">
+<a href="https://github.com/leighmcculloch/clone/actions"><img alt="Build" src="https://github.com/leighmcculloch/clone/workflows/build/badge.svg" /></a>
+<a href="https://goreportcard.com/report/github.com/leighmcculloch/clone"><img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/leighmcculloch/clone" /></a>
+</p>
 
-Clone personal GitHub repositories conveniently.
+Clone GitHub repositories conveniently.
 
 For public repositories:
 - Clone uses `https`. e.g. `https://github.com/leighmcculloch/githubclone`
@@ -17,16 +21,22 @@ For private repositories:
 
 Download and install the binary from the [releases](https://github.com/leighmcculloch/githubclone/releases) page.
 
+### Homebrew (Linux; macOS)
+
+```
+brew install 4d63/clone/clone
+```
+
 ### From Source
 
 ```
-go get 4d63.com/githubclone
+go get 4d63.com/clone
 ```
 
 ## Usage
 
 ```
-githubclone [<username>/]<repository-name> [destination-path]
+clone [<username>/]<repository-name> [destination-path]
 ```
 
 ## Examples
@@ -34,17 +44,17 @@ githubclone [<username>/]<repository-name> [destination-path]
 When cloning repositories matching your username:
 
 ```
-githubclone <repository-name>
+clone <repository-name>
 ```
 
 When cloning repositories not matching your username:
 
 ```
-githubclone <username>/<repository-name>
+clone <username>/<repository-name>
 ```
 
 To clone to a different directory:
 
 ```
-githubclone <username>/<repository-name> destination-path
+clone <username>/<repository-name> destination-path
 ```

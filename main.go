@@ -15,7 +15,13 @@ import (
 	"github.com/fatih/color"
 )
 
+var version = "<dev>"
+var commit = ""
+var date = ""
+
 func main() {
+	flagVersion := flag.Bool("version", false, "Print the version")
+	flagHelp := flag.Bool("help", false, "Print this help")
 	flag.Usage = func() {
 		fmt.Println("Usage: githubclone <repository-name> [target]")
 		flag.PrintDefaults()
@@ -24,7 +30,12 @@ func main() {
 
 	args := flag.Args()
 
-	if len(args) == 0 || len(args) > 2 {
+	if *flagVersion {
+		fmt.Println("clone", version, commit, date)
+		return
+	}
+
+	if *flagHelp || len(args) == 0 || len(args) > 2 {
 		flag.Usage()
 		return
 	}

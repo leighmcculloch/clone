@@ -1,12 +1,31 @@
 builds:
-  - binary: githubclone
+  - binary: clone
     goos:
       - linux
+      - darwin
+      - windows
     goarch:
       - amd64
 
-archive:
-  wrap_in_directory: true
-  format: tar.gz
-  files:
-    - LICENSE
+archives:
+  -
+    wrap_in_directory: true
+    format: tar.gz
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - LICENSE
+
+brews:
+  -
+    github:
+      owner: leighmcculloch
+      name: clone
+    folder: Formula
+    homepage: "https://4d63.com/clone"
+    description: Clone GitHub repositories conveniently.
+    test: |
+      system "#{bin}/clone -help"
+    install: |
+      bin.install "clone"
