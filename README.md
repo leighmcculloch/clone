@@ -1,8 +1,8 @@
 <div align="center"><img alt="clone" src="README-clone.png" /></div>
 <p align="center">
-<a href="https://github.com/leighmcculloch/clone/releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/leighmcculloch/clone.svg" /></a>
 <a href="https://github.com/leighmcculloch/clone/actions"><img alt="Build" src="https://github.com/leighmcculloch/clone/workflows/build/badge.svg" /></a>
 <a href="https://goreportcard.com/report/github.com/leighmcculloch/clone"><img alt="Go Report Card" src="https://goreportcard.com/badge/github.com/leighmcculloch/clone" /></a>
+<a href="https://github.com/leighmcculloch/clone/releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/leighmcculloch/clone.svg" /></a>
 </p>
 
 Clone GitHub repositories conveniently.
