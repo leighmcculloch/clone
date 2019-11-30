@@ -23,7 +23,7 @@ func main() {
 	flagVersion := flag.Bool("version", false, "Print the version")
 	flagHelp := flag.Bool("help", false, "Print this help")
 	flag.Usage = func() {
-		fmt.Println("Usage: githubclone <repository-name> [target]")
+		fmt.Println("Usage: clone <repository-name> [target]")
 		flag.PrintDefaults()
 	}
 	flag.Parse()

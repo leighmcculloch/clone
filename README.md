@@ -8,8 +8,8 @@
 Clone GitHub repositories conveniently.
 
 For public repositories:
-- Clone uses `https`. e.g. `https://github.com/leighmcculloch/githubclone`
-- Push uses `ssh`. e.g. `git@github.com:leighmcculloch/githubclone`
+- Clone uses `https`. e.g. `https://github.com/leighmcculloch/clone`
+- Push uses `ssh`. e.g. `git@github.com:leighmcculloch/clone`
 - Automatically configures an `upstream` remote to the parent if repo is a fork.
 
 For private repositories:
@@ -20,7 +20,7 @@ For private repositories:
 
 ### Binary (Linux; macOS; Windows)
 
-Download and install the binary from the [releases](https://github.com/leighmcculloch/githubclone/releases) page.
+Download and install the binary from the [releases](https://github.com/leighmcculloch/clone/releases) page.
 
 ### Homebrew (Linux; macOS)
 
