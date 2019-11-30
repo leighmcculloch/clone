@@ -2,16 +2,16 @@
 class Clone < Formula
   desc "Clone GitHub repositories conveniently."
   homepage "https://4d63.com/clone"
-  version "2.0.0"
+  version "2.0.1"
   bottle :unneeded
 
   if OS.mac?
-    url "https://github.com/leighmcculloch/clone/releases/download/v2.0.0/clone_2.0.0_darwin_amd64.tar.gz"
-    sha256 "93aff8fc289e2dac5c5df12033748393730056c800dcefe7eb9b753a1a551039"
+    url "https://github.com/leighmcculloch/clone/releases/download/v2.0.1/clone_2.0.1_darwin_amd64.tar.gz"
+    sha256 "7914ab29c71065190d551985657138d513498c8ab6213608d3768257a259378f"
   elsif OS.linux?
     if Hardware::CPU.intel?
-      url "https://github.com/leighmcculloch/clone/releases/download/v2.0.0/clone_2.0.0_linux_amd64.tar.gz"
-      sha256 "d0166d98e019c0d6e0dc8fbcb2bb1a21f305a1410a655394d535f7c6b9c46de2"
+      url "https://github.com/leighmcculloch/clone/releases/download/v2.0.1/clone_2.0.1_linux_amd64.tar.gz"
+      sha256 "9f5ee35927cd9075169bc69b59745653e1542ed3bfd2ade71fd464b77628e984"
     end
   end
 
